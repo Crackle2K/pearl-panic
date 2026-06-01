@@ -18,6 +18,9 @@ class Main:
         intro_path = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "intro.png")
         intro_img = pygame.image.load(intro_path).convert()
         intro_img = pygame.transform.scale(intro_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        
+        if not pygame.mixer.music.get_busy():
+            self.load_music()
 
         waiting = True
         while waiting:
@@ -27,9 +30,18 @@ class Main:
                     sys.exit()
                 if event.type in (pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN):
                     waiting = False
+                    
+            
 
             self.screen.blit(intro_img, (0, 0))
             pygame.display.flip()
             self.clock.tick(60)
+            
+    def load_music(self):
+        try:
+            pygame.mixer.music.load("assets/sound/music/coral_chorus.mp3")
+            pygame.mixer.music.play(-1)
+        except Exception:
+            pass
 
 Main()
