@@ -51,6 +51,8 @@ class Player(Sprites):
         self.screen_height = screen_height
         self._base_image = player_image
         self._facing_right = True
+        self._dash_last_time = 0
+        self._dash_cooldown = 1000
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -78,6 +80,7 @@ class Player(Sprites):
 
     def update(self, dt=0.0):
         self.movement()
+        self.dash()
         self.update_sprite()
         super().update(dt)
         self.pos.x = max(0, min(self.pos.x, self.screen_width - self.rect.width))
@@ -92,6 +95,19 @@ class Player(Sprites):
 
     def gain_pearl(self):
         self.pearls += 1
+        
+    def dash(self):
+        keys = pygame.key.get_pressed()
+        current_time = pygame.time.get_ticks()
+
+        if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
+            if (current_time - self._dash_last_time) >= self._dash_cooldown:
+                if self._facing_right:
+                    self.vel.x += (self.speed * 30)
+                else:
+                    self.vel.x -= (self.speed * 30)
+                self._dash_last_time = current_time
+        
         
 class Obstacle(Sprites):
     pass

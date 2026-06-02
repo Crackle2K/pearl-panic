@@ -11,6 +11,7 @@ from data import DataHandler
 import levels
 
 class Main:
+    
     SCREEN_WIDTH = 680
     SCREEN_HEIGHT = 480
 
@@ -78,7 +79,9 @@ class Main:
 
             pygame.display.flip()
             self.clock.tick(60)
+            
         return selected_level
+    
     def start_game(self):
         current_lvl = self.data_handler.get_saved_level()
         if current_lvl == 1:
