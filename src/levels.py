@@ -13,13 +13,15 @@ class level():
         self.SCREEN_WIDTH = screen.get_width()
         self.SCREEN_HEIGHT = screen.get_height()
         self.bg_img = None
-        
-    def update(self):
-        pass 
-    
+        self.player = Player(120, 120, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+
+    def update(self, dt=0.0):
+        self.player.update(dt)
+
     def draw(self):
-        self.screen.blit(self.bg_img, (0,0))
-        
+        self.screen.blit(self.bg_img, (0, 0))
+        self.player.draw(self.screen)
+
 class level1(level):
     def __init__(self, screen):
         super().__init__(screen)

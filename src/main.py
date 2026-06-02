@@ -1,3 +1,9 @@
+"""
+Authors: Dinesh Sinnathamby and Dhani Shah
+Date: May 29th, 2026
+Description: This is the main file for Pearl Panic, an underwater arcade survival game where players dodge marine hazards and manage a depleting oxygen tank to retrieve lost pearls across evolving ocean depths.
+"""
+
 
 import pygame
 import sys
@@ -84,14 +90,14 @@ class Main:
 
         run = True
         while run:
+            dt = self.clock.tick(60) / 1000.0
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
 
-            show_level.update()
+            show_level.update(dt)
             show_level.draw()
             pygame.display.flip()
-            self.clock.tick(60)
         pygame.quit()
         sys.exit()
         

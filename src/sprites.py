@@ -8,12 +8,12 @@ import pygame
 
 class Sprites(pygame.sprite.Sprite):
     
-    def __init__(self, x=0, y=0, width=32, height=32, *groups):
-        
-        super.__init__(*groups)
+    def __init__(self, x=0, y=0, width=32, height=32, image=None, *groups):
+
+        super().__init__(*groups)
         self.pos = pygame.math.Vector2(x, y)
         self.vel = pygame.math.Vector2(0, 0)
-        
+
         if image is None:
             image = pygame.Surface((width, height), pygame.SRCALPHA)
             image.fill((255, 255, 255, 255))
@@ -37,29 +37,59 @@ class Sprites(pygame.sprite.Sprite):
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
         
 class Player(Sprites):
-    
-    def __init__(self, x=120, y=120):
-        
+
+    def __init__(self, x=120, y=120, screen_width=680, screen_height=480):
+
         player_image = pygame.image.load("assets/images/diver.png").convert_alpha()
         player_image = pygame.transform.smoothscale(player_image, (40, 60))
         super().__init__(x=x, y=y, width=40, height=60, image=player_image)
-        
+
         self.oxygen = 60
         self.speed = 100
         self.pearls = 0
-        
-    def movement():
-        pass
-    
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self._base_image = player_image
+        self._facing_right = True
+
+    def movement(self):
+        keys = pygame.key.get_pressed()
+        self.vel.update(0, 0)
+
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.vel.x -= self.speed
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.vel.x += self.speed
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.vel.y -= self.speed
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self.vel.y += self.speed
+
+        if self.vel.length() > 0:
+            self.vel.scale_to_length(self.speed)
+
     def update_sprite(self):
-        pass
-    
+        if self.vel.x < 0 and self._facing_right:
+            self._facing_right = False
+            self.image = pygame.transform.flip(self._base_image, True, False)
+        elif self.vel.x > 0 and not self._facing_right:
+            self._facing_right = True
+            self.image = self._base_image
+
+    def update(self, dt=0.0):
+        self.movement()
+        self.update_sprite()
+        super().update(dt)
+        self.pos.x = max(0, min(self.pos.x, self.screen_width - self.rect.width))
+        self.pos.y = max(0, min(self.pos.y, self.screen_height - self.rect.height))
+        self.rect.topleft = (int(self.pos.x), int(self.pos.y))
+
     def lose_oxygen(self):
         self.oxygen -= 5
-        
+
     def lose_speed(self):
-        pass
-    
+        self.speed = max(0, self.speed - 10)
+
     def gain_pearl(self):
         self.pearls += 1
         
