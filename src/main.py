@@ -1,8 +1,7 @@
 
 import pygame
 import sys
-import os
-from data import datahandler
+from data import DataHandler
 import levels
 
 class Main:
@@ -14,7 +13,7 @@ class Main:
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Pearl Panic")
         self.clock = pygame.time.Clock()
-        self.data_handler = datahandler()
+        self.data_handler = DataHandler()
 
         chosen_level = self.show_intro()
         self.data_handler.save_current_level(chosen_level)
@@ -36,8 +35,7 @@ class Main:
         return button_rect
 
     def show_intro(self):
-        intro_path = os.path.join(os.path.dirname(__file__), "..", "assets", "images", "intro.png")
-        intro_img = pygame.image.load(intro_path).convert()
+        intro_img = pygame.image.load("assets/images/intro.png").convert()
         intro_img = pygame.transform.scale(intro_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         
         self.load_music()
