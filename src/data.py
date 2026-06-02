@@ -1,14 +1,15 @@
-import levels
-class data():
-    def __init__(self, lvlnum):
-        self.current_lvl = lvlnum
-        self.data = open("userdata.txt", 'a')
-        lines = self.data.readlines()
-        self.data.write(str(self.current_lvl) + '\n')
-        self.data.close()
-        if lines[0].strip() == '1':
-            levels.level1()
-        elif lines[0].strip() == '2': 
-            levels.level2()
-        elif lines[0].strip() == '3':
-            levels.level3()
+class datahandler():
+    def __init__(self):
+        pass
+    def save_current_level(self, lvlnum):
+        with open("userdata.txt", "w") as file:
+            file.write(str(lvlnum) + "\n")
+    def get_saved_level(self):
+        try:
+            with open("userdata.txt", 'r') as file:
+                lines = file.readlines()
+                if lines:
+                    return int(lines[0].strip())
+            return 1
+        except FileNotFoundError:
+            return 1

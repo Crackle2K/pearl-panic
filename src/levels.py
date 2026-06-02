@@ -1,31 +1,34 @@
-import data, pygame, os
+import pygame, os
 
-class levels():
-    def __init__(self):
-        pygame.init()
-        self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((680,480))
-        self.screen.blit()
-        pygame.display.flip()
-class level1(levels):
-    def __init__(self):
-        super().__init__()
+class level():
+    def __init__(self, screen):
+        self.screen = screen 
+        self.SCREEN_WIDTH = screen.get_width()
+        self.SCREEN_HEIGHT = screen.get_height()
+        self.bg_img = None
+    def update(self):
+        pass 
+    def draw(self):
+        self.screen.blit(self.bg_img, (0,0))
+class level1(level):
+    def __init__(self, screen):
+        super().__init__(screen)
         beach_path = os.path.join(os.path.dirname(__file__), "assets", "images", "beach.png")
-        beach_img = pygame.image.load(beach_path).convert()
-        beach_img = pygame.transform.scale(beach_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.bg_img = pygame.image.load(beach_path).convert()
+        self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
-class level2(levels):
-    def __init__(self):
-        super().__init__()
-        ocean_path = os.path.join(os.path.dirname(__file__), "assets", "images", "beach.png")
-        ocean_img = pygame.image.load(ocean_path).convert()
-        ocean_img = pygame.transform.scale(ocean_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-class level3(levels):
-    def __init__(self):
-        super().__init__() 
-        cave_path = os.path.join(os.path.dirname(__file__), "assets", "images", "beach.png")
-        cave_img = pygame.image.load(cave_path).convert()
-        cave_img = pygame.transform.scale(cave_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+class level2(level):
+    def __init__(self, screen):
+        super().__init__(screen)
+        ocean_path = os.path.join(os.path.dirname(__file__), "assets", "images", "ocean.png")
+        self.bg_img = pygame.image.load(ocean_path).convert()
+        self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+class level3(level):
+    def __init__(self, screen):
+        super().__init__(screen)
+        cave_path = os.path.join(os.path.dirname(__file__), "assets", "images", "cave.png")
+        self.bg_img = pygame.image.load(cave_path).convert()
+        self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
 
 

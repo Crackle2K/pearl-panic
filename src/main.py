@@ -2,6 +2,8 @@
 import pygame
 import sys
 import os
+from data import datahandler
+import levels
 
 class Main:
     SCREEN_WIDTH = 680
@@ -12,7 +14,11 @@ class Main:
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Pearl Panic")
         self.clock = pygame.time.Clock()
-        self.show_intro()
+        self.data_handler = datahandler()
+
+        chosen_level = self.show_intro()
+        self.data_handler.save_current_level(chosen_level)
+        self.start_game()
         
     def create_button(self, text, y_position):
         button_width, button_height = 200, 50
@@ -34,16 +40,17 @@ class Main:
         intro_img = pygame.image.load(intro_path).convert()
         intro_img = pygame.transform.scale(intro_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         
-        if not pygame.mixer.music.get_busy():
-            self.load_music()
+        self.load_music()
 
         waiting = True
+        selected_level = 1
+
         while waiting:
             self.screen.blit(intro_img, (0, 0))
             
-            start_rect = self.create_button("Level 1", 200)
-            options_rect = self.create_button("Level 2", 270)
-            quit_rect = self.create_button("Level 3", 340)
+            blvl1 = self.create_button("Level 1", 200)
+            blvl2 = self.create_button("Level 2", 270)
+            blvl3 = self.create_button("Level 3", 340)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -53,21 +60,43 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     
-                    if start_rect.collidepoint(mouse_pos):
-                        #level 1 button logic
+                    if blvl1.collidepoint(mouse_pos):
                         waiting = False
+                        selected_level = 1
                         
-                    elif options_rect.collidepoint(mouse_pos):
-                        # level 2 button logic
+                    elif blvl2.collidepoint(mouse_pos):
                         waiting = False
-                        
-                    elif quit_rect.collidepoint(mouse_pos):
-                        # level 3 button logic
+                        selected_level = 2
+
+                    elif blvl3.collidepoint(mouse_pos):
                         waiting = False
+                        selected_level = 3
 
             pygame.display.flip()
             self.clock.tick(60)
-            
+        return selected_level
+    def start_game(self):
+        current_lvl = self.data_handler.get_saved_level()
+        if current_lvl == 1:
+            show_level = levels.level1(self.screen)
+        elif current_lvl == 2:
+            show_level = levels.level2(self.screen)
+        else:
+            show_level = levels.level3(self.screen)
+
+        run = True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+
+            show_level.update()
+            show_level.draw()
+            pygame.display.flip()
+            self.clock.tick(60)
+        pygame.quit()
+        sys.exit()
+        
     def load_music(self):
         try:
             pygame.mixer.music.load("assets/sound/music/coral_chorus.mp3")
