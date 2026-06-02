@@ -4,7 +4,7 @@ Date: May 29th, 2026
 Description: This file contains various different objects and sprites for Pearl Panic. It includes the main diver, the enemies, a few different obstacles, as well as the environment.
 """
 
-import pygame
+import pygame, random 
 
 class Sprites(pygame.sprite.Sprite):
     
@@ -12,7 +12,7 @@ class Sprites(pygame.sprite.Sprite):
 
         super().__init__(*groups)
         self.pos = pygame.math.Vector2(x, y)
-        self.vel = pygame.math.Vector2(0, 0)
+        self.speed = pygame.math.Vector2(0, 0)
 
         if image is None:
             image = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -22,8 +22,8 @@ class Sprites(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(int(self.pos.x), int(self.pos.y)))
     
     def update(self, dt=0.0):
-        self.pos.x += self.vel.x * dt
-        self.pos.y += self.vel.y * dt
+        self.pos.x += self.speed.x * dt
+        self.pos.y += self.speed.y * dt
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
 
     def draw(self, surface):
@@ -45,7 +45,7 @@ class Player(Sprites):
         super().__init__(x=x, y=y, width=40, height=60, image=player_image)
 
         self.oxygen = 60
-        self.speed = 100
+        self.move_speed = 100
         self.pearls = 0
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -56,25 +56,26 @@ class Player(Sprites):
 
     def movement(self):
         keys = pygame.key.get_pressed()
-        self.vel.update(0, 0)
+        self.speed.update(0, 0)
 
+        if self.speed.length() > 0:
+            self.speed.scale_to_length(self.move_speed)
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.vel.x -= self.speed
+            self.speed.x -= self.move_speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.vel.x += self.speed
+            self.speed.x += self.move_speed
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.vel.y -= self.speed
+            self.speed.y -= self.move_speed
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self.vel.y += self.speed
+            self.speed.y += self.move_speed
 
-        if self.vel.length() > 0:
-            self.vel.scale_to_length(self.speed)
-
+        if self.speed.length() > 0:
+            self.speed.scale_to_length(self.move_speed)
     def update_sprite(self):
-        if self.vel.x < 0 and self._facing_right:
+        if self.speed.x < 0 and self._facing_right:
             self._facing_right = False
             self.image = pygame.transform.flip(self._base_image, True, False)
-        elif self.vel.x > 0 and not self._facing_right:
+        elif self.speed.x > 0 and not self._facing_right:
             self._facing_right = True
             self.image = self._base_image
 
@@ -91,7 +92,7 @@ class Player(Sprites):
         self.oxygen -= 5
 
     def lose_speed(self):
-        self.speed = max(0, self.speed - 10)
+        self.move_speed = max(0, self.move_speed - 10)
 
     def gain_pearl(self):
         self.pearls += 1
@@ -103,9 +104,9 @@ class Player(Sprites):
         if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if (current_time - self._dash_last_time) >= self._dash_cooldown:
                 if self._facing_right:
-                    self.vel.x += (self.speed * 30)
+                    self.pos.x += 60
                 else:
-                    self.vel.x -= (self.speed * 30)
+                    self.pos.x -= 60
                 self._dash_last_time = current_time
         
         
@@ -125,10 +126,8 @@ class Shark(Obstacle):
         
         shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
         shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
-        super().init(x=x, y=y, width= 80, height=40, damage= 20 )
-        self.image = shark_img
+        super().__init__(x=x, y=y, width= 80, height=40, image = shark_img, damage= 20 )
         self.speed.x = random.randint(-120, -70) 
-
     def update(self, dt):
         super().update(dt)
         self.check_offscreen()
@@ -144,8 +143,7 @@ class Jellyfish(Obstacle):
         jelly_img = pygame.image.load("assets/images/jellyfish.png").convert_alpha()
         jelly_img = pygame.transform.smoothscale(jelly_img, (30, 40))
         
-        super().__init__(x=x, y=y, width=30, height=40, damage=10)
-        self.image = jelly_img
+        super().__init__(x=x, y=y, width=30, height=40, image=jelly_img, damage=10)
         self.speed.x = self.initial_speed_x
         self.speed.y = self.initial_speed_y
 
@@ -156,19 +154,20 @@ class Jellyfish(Obstacle):
 class Current(Obstacle):
     def __init__(self):
         
-        x = -700
-        self.speed = 250
-
+        x = -670
+        self.push_speed = 250
         y = random.randint(80, 380)
         
         current_img = pygame.image.load("assets/images/current.png").convert_alpha()
         current_img = pygame.transform.smoothscale(current_img, (680, 50))
            
-        super().__init__(x=x, y=y, width=680, height=50, damage=0)
+        super().__init__(x=x, y=y, width=680, height=50, image=current_img, damage=0)
         self.image = current_img
-        self.vel.x = self.speed
+        self.speed.x = self.push_speed
         self.push_force = 60
-
+    def check_offscreen(self):
+        if self.pos.x > 750:
+            self.kill()
     def update(self, dt):
         super().update(dt)
         self.check_offscreen()

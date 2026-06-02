@@ -83,6 +83,7 @@ class Main:
         return selected_level
     
     def start_game(self):
+        show_level: levels.level
         current_lvl = self.data_handler.get_saved_level()
         if current_lvl == 1:
             show_level = levels.level1(self.screen)
