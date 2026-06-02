@@ -110,13 +110,65 @@ class Player(Sprites):
         
         
 class Obstacle(Sprites):
-    pass
+    def __init__(self, x, y, width, height, image, damage=10):
+        super().__init__(x=x, y=y, width=width, height=height, image=image)
+        self.damage = damage
+    def check_offscreen(self):
+        if (self.pos.x < -150 or self.pos.x > 800 or 
+            self.pos.y < -100 or self.pos.y > 600):
+            self.kill()
 
 class Shark(Obstacle):
-    pass
+    def __init__(self):
+        x = 700
+        y = random.randint(50, 400)
+        
+        shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
+        shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
+        super().init(x=x, y=y, width= 80, height=40, damage= 20 )
+        self.image = shark_img
+        self.speed.x = random.randint(-120, -70) 
+
+    def update(self, dt):
+        super().update(dt)
+        self.check_offscreen()
+
 
 class Jellyfish(Obstacle):
-    pass
+    def __init__(self):
+        x = -40
+        y = random.randint(50, 430)
+        self.initial_speed_x = random.randint(40, 80)
+        self.initial_speed_y = random.randint(-60, 60)
+       
+        jelly_img = pygame.image.load("assets/images/jellyfish.png").convert_alpha()
+        jelly_img = pygame.transform.smoothscale(jelly_img, (30, 40))
+        
+        super().__init__(x=x, y=y, width=30, height=40, damage=10)
+        self.image = jelly_img
+        self.speed.x = self.initial_speed_x
+        self.speed.y = self.initial_speed_y
+
+    def update(self, dt):
+        super().update(dt)
+        self.check_offscreen()
 
 class Current(Obstacle):
-    pass
+    def __init__(self):
+        
+        x = -700
+        self.speed = 250
+
+        y = random.randint(80, 380)
+        
+        current_img = pygame.image.load("assets/images/current.png").convert_alpha()
+        current_img = pygame.transform.smoothscale(current_img, (680, 50))
+           
+        super().__init__(x=x, y=y, width=680, height=50, damage=0)
+        self.image = current_img
+        self.vel.x = self.speed
+        self.push_force = 60
+
+    def update(self, dt):
+        super().update(dt)
+        self.check_offscreen()
