@@ -52,7 +52,7 @@ class level():
     def update(self, dt=0.0):
         self.handle_spawns()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
+        if keys[pygame.K_r]:
             self.shield.activate()
         self.shield.update(dt)
         self.player.update(dt)
