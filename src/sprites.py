@@ -66,6 +66,7 @@ class Player(Sprites):
             self.speed.y -= self.move_speed
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.speed.y += self.move_speed
+            
     def update_sprite(self):
         if self.speed.x < 0 and self._facing_right:
             self._facing_right = False
@@ -108,6 +109,7 @@ class Shield(Sprites):
     def __init__(self, player):
         shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
         shield_image = pygame.transform.smoothscale(shield_image, (80, 90))
+        shield_image.set_alpha(128)
         super().__init__(x=player.pos.x, y=player.pos.y, width=80, height=90, image=shield_image)
         self.player = player
         self.active = False
