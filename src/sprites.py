@@ -130,9 +130,15 @@ class Shield(Sprites):
         self.pos.x = self.player.pos.x - 20
         self.pos.y = self.player.pos.y - 15
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
-
-
         
+class Pearl(Sprites):
+    def __init__(self):  
+        pearl_img = pygame.image.load("assets/images/pearl.png").convert()
+        pearl_img = pygame.transform.scale(pearl_img, (40,40))
+        x = random.randint(10, 400)
+        y = random.randint(20, 500)
+        super().__init__(x=x, y=y, width=40, height=40, image=pearl_img)
+
 class Obstacle(Sprites):
     def __init__(self, x, y, width, height, image, damage=10):
         super().__init__(x=x, y=y, width=width, height=height, image=image)

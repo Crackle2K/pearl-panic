@@ -24,7 +24,15 @@ class level():
         self.shark_interval = 120
         self.jelly_interval = 180
         self.current_interval = 150
-        
+        self.pearl_interval = 100
+        self.pearl_frames = 0
+    def spawn_pearl(self):
+        self.pearl_frames +=1
+        if self.pearl_frames >= self.pearl_interval:
+            new_pearl = sprites.Pearl() 
+            self.obstacle_group.add(new_pearl)
+            self.pearl_frames = 0
+
     def spawn_shark(self):
         self.shark_frames += 1
         if self.shark_frames >= self.shark_interval:
@@ -76,7 +84,7 @@ class level1(level):
         
     def handle_spawns(self):
         self.spawn_shark()
-        
+        self.spawn_pearl()
 class level2(level):
     
     def __init__(self, screen):
@@ -87,6 +95,7 @@ class level2(level):
     def handle_spawns(self):
         self.spawn_shark()
         self.spawn_jellyfish()
+        self.spawn_pearl()
         
 class level3(level):
     
@@ -99,5 +108,6 @@ class level3(level):
         self.spawn_shark()
         self.spawn_jellyfish()
         self.spawn_current()
+        self.spawn_pearl()
 
 
