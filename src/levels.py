@@ -16,6 +16,7 @@ class level():
         self.SCREEN_HEIGHT = screen.get_height()
         self.bg_img = None
         self.player = Player(120, 120, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        self.shield = sprites.Shield(self.player)
         self.obstacle_group = pygame.sprite.Group()
         self.shark_frames = 0 
         self.jelly_frames = 0
@@ -50,12 +51,20 @@ class level():
 
     def update(self, dt=0.0):
         self.handle_spawns()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]:
+            self.shield.activate()
+        self.shield.update(dt)
         self.player.update(dt)
         self.obstacle_group.update(dt)
-        
+        if self.shield.active:
+            pygame.sprite.spritecollide(self.shield, self.obstacle_group, True)
+
     def draw(self):
         self.screen.blit(self.bg_img, (0, 0))
         self.player.draw(self.screen)
+        if self.shield.active:
+            self.shield.draw(self.screen)
         self.obstacle_group.draw(self.screen)
 
 class level1(level):

@@ -7,10 +7,10 @@ Description: This file contains various different objects and sprites for Pearl 
 import pygame, random 
 
 class Sprites(pygame.sprite.Sprite):
-    
-    def __init__(self, x=0, y=0, width=32, height=32, image=None, *groups):
 
-        super().__init__(*groups)
+    def __init__(self, x=0, y=0, width=32, height=32, image=None):
+
+        super().__init__()
         self.pos = pygame.math.Vector2(x, y)
         self.speed = pygame.math.Vector2(0, 0)
 
@@ -58,8 +58,6 @@ class Player(Sprites):
         keys = pygame.key.get_pressed()
         self.speed.update(0, 0)
 
-        if self.speed.length() > 0:
-            self.speed.scale_to_length(self.move_speed)
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.speed.x -= self.move_speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -68,9 +66,6 @@ class Player(Sprites):
             self.speed.y -= self.move_speed
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.speed.y += self.move_speed
-
-        if self.speed.length() > 0:
-            self.speed.scale_to_length(self.move_speed)
     def update_sprite(self):
         if self.speed.x < 0 and self._facing_right:
             self._facing_right = False
@@ -110,9 +105,33 @@ class Player(Sprites):
                 self._dash_last_time = current_time
 
 class Shield(Sprites):
-    def __init__(self, x, y, image):
-        super().__init__(x=x, y=y, width=150, height=150, image=image)
-        
+    def __init__(self, player):
+        shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
+        shield_image = pygame.transform.smoothscale(shield_image, (80, 90))
+        super().__init__(x=player.pos.x, y=player.pos.y, width=80, height=90, image=shield_image)
+        self.player = player
+        self.active = False
+        self._duration = 2000
+        self._cooldown = 3000
+        self._activated_time = 0
+        self._last_used = 0
+
+    def activate(self):
+        current_time = pygame.time.get_ticks()
+        if not self.active and (current_time - self._last_used) >= self._cooldown:
+            self.active = True
+            self._activated_time = current_time
+
+    def update(self, dt=0.0):
+        current_time = pygame.time.get_ticks()
+        if self.active and (current_time - self._activated_time) >= self._duration:
+            self.active = False
+            self._last_used = current_time
+        self.pos.x = self.player.pos.x - 20
+        self.pos.y = self.player.pos.y - 15
+        self.rect.topleft = (int(self.pos.x), int(self.pos.y))
+
+
         
 class Obstacle(Sprites):
     def __init__(self, x, y, width, height, image, damage=10):
