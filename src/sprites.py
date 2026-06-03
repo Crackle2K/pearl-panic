@@ -132,6 +132,10 @@ class Shark(Obstacle):
         shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
         super().__init__(x=x, y=y, width= 80, height=40, image = shark_img, damage= 20 )
         self.speed.x = random.randint(-120, -70) 
+    def check_offscreen(self):
+        if (self.pos.x < -150 or self.pos.x > 800 or 
+            self.pos.y < -100 or self.pos.y > 400):
+            self.kill()
     def update(self, dt):
         super().update(dt)
         self.check_offscreen()
