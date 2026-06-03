@@ -9,6 +9,7 @@ from sprites import Player
 import sprites
 
 class level():
+    
     def __init__(self, screen):
         self.screen = screen
         self.SCREEN_WIDTH = screen.get_width()
@@ -22,6 +23,7 @@ class level():
         self.shark_interval = 120
         self.jelly_interval = 180
         self.current_interval = 150
+        
     def spawn_shark(self):
         self.shark_frames += 1
         if self.shark_frames >= self.shark_interval:
@@ -42,6 +44,7 @@ class level():
             new_current = sprites.Current()
             self.obstacle_group.add(new_current)
             self.current_frames = 0
+            
     def handle_spawns(self):
         pass
 
@@ -49,31 +52,40 @@ class level():
         self.handle_spawns()
         self.player.update(dt)
         self.obstacle_group.update(dt)
+        
     def draw(self):
         self.screen.blit(self.bg_img, (0, 0))
         self.player.draw(self.screen)
         self.obstacle_group.draw(self.screen)
 
 class level1(level):
+    
     def __init__(self, screen):
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/beach.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        
     def handle_spawns(self):
         self.spawn_shark()
+        
 class level2(level):
+    
     def __init__(self, screen):
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/ocean.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        
     def handle_spawns(self):
         self.spawn_shark()
         self.spawn_jellyfish()
+        
 class level3(level):
+    
     def __init__(self, screen):
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/cave.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        
     def handle_spawns(self):
         self.spawn_shark()
         self.spawn_jellyfish()

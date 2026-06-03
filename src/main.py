@@ -22,9 +22,13 @@ class Main:
         self.clock = pygame.time.Clock()
         self.data_handler = DataHandler()
 
-        chosen_level = self.show_intro()
-        self.data_handler.save_current_level(chosen_level)
-        self.start_game()
+        while True:
+            chosen_level = self.show_intro()
+            self.data_handler.save_current_level(chosen_level)
+            if not self.start_game():
+                break
+        pygame.quit()
+        sys.exit()
         
     def create_button(self, text, y_position):
         button_width, button_height = 200, 50
@@ -92,18 +96,17 @@ class Main:
         else:
             show_level = levels.level3(self.screen)
 
-        run = True
-        while run:
+        while True:
             dt = self.clock.tick(60) / 1000.0
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
+                    return False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return True
 
             show_level.update(dt)
             show_level.draw()
             pygame.display.flip()
-        pygame.quit()
-        sys.exit()
         
     def load_music(self):
         try:
