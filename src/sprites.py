@@ -5,7 +5,7 @@ Description: This file contains various different objects and sprites for Pearl 
 """
 
 import pygame, random 
-
+from data import DataHandler
 class Sprites(pygame.sprite.Sprite):
 
     def __init__(self, x=0, y=0, width=32, height=32, image=None):
