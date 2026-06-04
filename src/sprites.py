@@ -235,9 +235,9 @@ class Jellyfish(Obstacle):
         self.initial_speed_y = random.randint(-60, 60)
        
         jelly_img = pygame.image.load("assets/images/jellyfish.png").convert_alpha()
-        jelly_img = pygame.transform.smoothscale(jelly_img, (30, 40))
+        jelly_img = pygame.transform.smoothscale(jelly_img, (150, 150))
         
-        super().__init__(x=x, y=y, width=30, height=40, image=jelly_img, damage=10)
+        super().__init__(x=x, y=y, width=150, height=150, image=jelly_img, damage=10)
         self.speed.x = self.initial_speed_x
         self.speed.y = self.initial_speed_y
 
