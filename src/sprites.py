@@ -113,6 +113,7 @@ class Player(Sprites):
 
 class Shield(Sprites):
     def __init__(self, player):
+        self.data_handler = DataHandler()
         shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
         shield_image = pygame.transform.smoothscale(shield_image, (90, 90))
         shield_image.set_alpha(128)
@@ -126,7 +127,7 @@ class Shield(Sprites):
 
     def activate(self):
         current_time = pygame.time.get_ticks()
-        if not self.active and (current_time - self._last_used) >= self._cooldown:
+        if not self.active and (current_time - self._last_used) >= self._cooldown and self.data_handler.get_saved_level() != 1 and self.data_handler.get_saved_level() != 2:
             self.active = True
             self._activated_time = current_time
 
