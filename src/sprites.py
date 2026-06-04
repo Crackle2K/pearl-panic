@@ -114,7 +114,7 @@ class Player(Sprites):
         current_time = pygame.time.get_ticks()
 
         if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if not self._dash_active and (current_time - self._dash_last_time) >= self._dash_cooldown:
+            if not self._dash_active and (current_time - self._dash_last_time) >= self._dash_cooldown and self.data_handler.get_saved_level() != 1:
                 self._dash_active = True
                 self._dash_timer = 0.0
                 self._dash_dir = 1 if self._facing_right else -1
