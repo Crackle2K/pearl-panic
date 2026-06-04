@@ -4,7 +4,6 @@ Date: May 29th, 2026
 Description: This is the main file for Pearl Panic, an underwater arcade survival game where players dodge marine hazards and manage a depleting oxygen tank to retrieve lost pearls across evolving ocean depths.
 """
 
-
 import pygame
 import sys
 from data import DataHandler
