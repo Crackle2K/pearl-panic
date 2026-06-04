@@ -152,13 +152,13 @@ class Obstacle(Sprites):
 
 class Shark(Obstacle):
     def __init__(self):
-        x = 700
+        x = 10
         y = random.randint(50, 400)
         
         shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
         shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
         super().__init__(x=x, y=y, width= 80, height=40, image = shark_img, damage= 20 )
-        self.speed.x = random.randint(-120, -70) 
+        self.speed.x = random.randint(70,120) 
     def update(self, dt):
         super().update(dt)
         self.check_offscreen()
@@ -190,9 +190,9 @@ class Current(Obstacle):
         y = random.randint(80, 380)
         
         current_img = pygame.image.load("assets/images/current.png").convert_alpha()
-        current_img = pygame.transform.smoothscale(current_img, (680, 50))
+        current_img = pygame.transform.smoothscale(current_img, (200, 200))
            
-        super().__init__(x=x, y=y, width=680, height=50, image=current_img, damage=0)
+        super().__init__(x=x, y=y, width=200, height=200, image=current_img, damage=0)
         self.image = current_img
         self.speed.x = self.push_speed
         self.push_force = 60
