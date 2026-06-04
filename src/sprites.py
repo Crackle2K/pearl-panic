@@ -46,6 +46,7 @@ class Player(Sprites):
         super().__init__(x=x, y=y, width=40, height=60, image=player_image)
 
         self.oxygen = 60
+        self.oxygen_timer = 0.0
         self.move_speed = 100
         self.pearls = 0
         self.screen_width = screen_width
@@ -84,6 +85,10 @@ class Player(Sprites):
         self.pos.x = max(0, min(self.pos.x, self.screen_width - self.rect.width))
         self.pos.y = max(0, min(self.pos.y, self.screen_height - self.rect.height))
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
+        self.oxygen_timer += dt
+        if self.oxygen_timer >= 1.0:
+            self.oxygen = max(0, self.oxygen - 1)
+            self.oxygen_timer -= 1.0
 
     def lose_oxygen(self):
         self.oxygen -= 5
@@ -109,7 +114,7 @@ class Player(Sprites):
 class Shield(Sprites):
     def __init__(self, player):
         shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
-        shield_image = pygame.transform.smoothscale(shield_image, (80, 90))
+        shield_image = pygame.transform.smoothscale(shield_image, (90, 90))
         shield_image.set_alpha(128)
         super().__init__(x=player.pos.x, y=player.pos.y, width=80, height=90, image=shield_image)
         self.player = player
@@ -137,9 +142,9 @@ class Shield(Sprites):
 class Pearl(Sprites):
     def __init__(self):  
         pearl_img = pygame.image.load("assets/images/pearl.png").convert()
-        pearl_img = pygame.transform.scale(pearl_img, (30,40))
-        x = random.randint(10, 650)
-        y = random.randint(20, 470)
+        pearl_img = pygame.transform.scale(pearl_img, (40,40))
+        x = random.randint(10, 400)
+        y = random.randint(20, 500)
         super().__init__(x=x, y=y, width=40, height=40, image=pearl_img)
 
 class Obstacle(Sprites):
