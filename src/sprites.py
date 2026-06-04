@@ -39,7 +39,7 @@ class Sprites(pygame.sprite.Sprite):
 class Player(Sprites):
 
     def __init__(self, x=120, y=120, screen_width=680, screen_height=480):
-
+        self._data_handler = DataHandler()
         player_image = pygame.image.load("assets/images/diver.png").convert_alpha()
         player_image = pygame.transform.smoothscale(player_image, (40, 60))
         super().__init__(x=x, y=y, width=40, height=60, image=player_image)
@@ -219,8 +219,8 @@ class Shark(Obstacle):
         y = random.randint(50, 400)
         
         shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
-        shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
-        super().__init__(x=x, y=y, width= 80, height=40, image = shark_img, damage= 20 )
+        shark_img = pygame.transform.smoothscale(shark_img, (150, 150))
+        super().__init__(x=x, y=y, width= 150, height=150, image = shark_img, damage= 20 )
         self.speed.x = random.randint(70,120) 
     def update(self, dt):
         super().update(dt)
