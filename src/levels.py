@@ -72,6 +72,7 @@ class level():
 
     def draw(self):
         self.screen.blit(self.bg_img, (0, 0))
+        self.player.smoke_dash.draw(self.screen)
         self.player.draw(self.screen)
         if self.shield.active:
             self.shield.draw(self.screen)

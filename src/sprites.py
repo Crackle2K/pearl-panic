@@ -5,7 +5,6 @@ Description: This file contains various different objects and sprites for Pearl 
 """
 
 import pygame, random 
-from data import DataHandler
 
 class Sprites(pygame.sprite.Sprite):
 
@@ -14,7 +13,7 @@ class Sprites(pygame.sprite.Sprite):
         super().__init__()
         self.pos = pygame.math.Vector2(x, y)
         self.speed = pygame.math.Vector2(0, 0)
-        self.data_handler = DataHandler()
+
         if image is None:
             image = pygame.Surface((width, height), pygame.SRCALPHA)
             image.fill((255, 255, 255, 255))
@@ -55,6 +54,11 @@ class Player(Sprites):
         self._facing_right = True
         self._dash_last_time = 0
         self._dash_cooldown = 1000
+        self._dash_active = False
+        self._dash_timer = 0.0
+        self._dash_duration = 0.12
+        self._dash_dir = 1
+        self.smoke_dash = SmokeDash()
 
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -80,8 +84,14 @@ class Player(Sprites):
     def update(self, dt=0.0):
         self.movement()
         self.dash()
+        if self._dash_active:
+            self._dash_timer += dt
+            self.speed.x += self._dash_dir * (60 / self._dash_duration)
+            if self._dash_timer >= self._dash_duration:
+                self._dash_active = False
         self.update_sprite()
         super().update(dt)
+        self.smoke_dash.update(dt)
         self.pos.x = max(0, min(self.pos.x, self.screen_width - self.rect.width))
         self.pos.y = max(0, min(self.pos.y, self.screen_height - self.rect.height))
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
@@ -104,12 +114,57 @@ class Player(Sprites):
         current_time = pygame.time.get_ticks()
 
         if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if (current_time - self._dash_last_time) >= self._dash_cooldown and self.data_handler.get_saved_level() != 1:
-                if self._facing_right:
-                    self.pos.x += 60
-                else:
-                    self.pos.x -= 60
+            if not self._dash_active and (current_time - self._dash_last_time) >= self._dash_cooldown:
+                self._dash_active = True
+                self._dash_timer = 0.0
+                self._dash_dir = 1 if self._facing_right else -1
+                self.smoke_dash.play(self.pos.x - 5, self.pos.y + 10, self._facing_right)
                 self._dash_last_time = current_time
+
+class SmokeDash:
+    FRAME_COUNT = 7
+    FRAME_DURATION = 0.06
+
+    def __init__(self):
+        sheet = pygame.image.load("assets/animations/smoke-dash-animation.png").convert_alpha()
+        frame_w = sheet.get_width() // self.FRAME_COUNT
+        frame_h = sheet.get_height()
+        self._frames = []
+        for i in range(self.FRAME_COUNT):
+            frame = sheet.subsurface(pygame.Rect(i * frame_w, 0, frame_w, frame_h))
+            frame = pygame.transform.scale(frame, (50, 40))
+            self._frames.append(frame)
+        self._flipped = [pygame.transform.flip(f, True, False) for f in self._frames]
+        self.active = False
+        self._frame = 0
+        self._timer = 0.0
+        self._x = 0
+        self._y = 0
+        self._facing_right = True
+
+    def play(self, x, y, facing_right):
+        self.active = True
+        self._frame = 0
+        self._timer = 0.0
+        self._x = x
+        self._y = y
+        self._facing_right = facing_right
+
+    def update(self, dt):
+        if not self.active:
+            return
+        self._timer += dt
+        if self._timer >= self.FRAME_DURATION:
+            self._timer -= self.FRAME_DURATION
+            self._frame += 1
+            if self._frame >= self.FRAME_COUNT:
+                self.active = False
+
+    def draw(self, surface):
+        if not self.active:
+            return
+        frames = self._frames if self._facing_right else self._flipped
+        surface.blit(frames[self._frame], (self._x, self._y))
 
 class Shield(Sprites):
     def __init__(self, player):
@@ -144,8 +199,8 @@ class Pearl(Sprites):
     def __init__(self):  
         pearl_img = pygame.image.load("assets/images/pearl.png").convert_alpha()
         pearl_img = pygame.transform.scale(pearl_img, (40,40))
-        x = random.randint(10, 670)
-        y = random.randint(20, 450)
+        x = random.randint(10, 400)
+        y = random.randint(20, 500)
         super().__init__(x=x, y=y, width=40, height=40, image=pearl_img)
 
 class Obstacle(Sprites):
@@ -163,8 +218,8 @@ class Shark(Obstacle):
         y = random.randint(50, 400)
         
         shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
-        shark_img = pygame.transform.smoothscale(shark_img, (150, 150))
-        super().__init__(x=x, y=y, width= 150, height=150, image = shark_img, damage= 20 )
+        shark_img = pygame.transform.smoothscale(shark_img, (80, 40))
+        super().__init__(x=x, y=y, width= 80, height=40, image = shark_img, damage= 20 )
         self.speed.x = random.randint(70,120) 
     def update(self, dt):
         super().update(dt)
