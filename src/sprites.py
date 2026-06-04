@@ -59,6 +59,7 @@ class Player(Sprites):
         self._dash_duration = 0.12
         self._dash_dir = 1
         self.smoke_dash = SmokeDash()
+        self.data_handler = DataHandler()
 
     def movement(self):
         keys = pygame.key.get_pressed()
