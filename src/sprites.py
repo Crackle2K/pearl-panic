@@ -5,6 +5,7 @@ Description: This file contains various different objects and sprites for Pearl 
 """
 
 import pygame, random 
+from data import DataHandler
 
 class Sprites(pygame.sprite.Sprite):
 
@@ -13,7 +14,7 @@ class Sprites(pygame.sprite.Sprite):
         super().__init__()
         self.pos = pygame.math.Vector2(x, y)
         self.speed = pygame.math.Vector2(0, 0)
-
+        self.data_handler = DataHandler()
         if image is None:
             image = pygame.Surface((width, height), pygame.SRCALPHA)
             image.fill((255, 255, 255, 255))
@@ -98,7 +99,7 @@ class Player(Sprites):
         current_time = pygame.time.get_ticks()
 
         if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if (current_time - self._dash_last_time) >= self._dash_cooldown:
+            if (current_time - self._dash_last_time) >= self._dash_cooldown and self.data_handler.get_saved_level() != 1:
                 if self._facing_right:
                     self.pos.x += 60
                 else:
