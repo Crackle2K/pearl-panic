@@ -198,9 +198,9 @@ class Shield(Sprites):
 class Pearl(Sprites):
     def __init__(self):  
         pearl_img = pygame.image.load("assets/images/pearl.png").convert_alpha()
-        pearl_img = pygame.transform.scale(pearl_img, (40,40))
-        x = random.randint(10, 400)
-        y = random.randint(20, 500)
+        pearl_img = pygame.transform.scale(pearl_img, (30,40))
+        x = random.randint(10, 670)
+        y = random.randint(20, 450)
         super().__init__(x=x, y=y, width=40, height=40, image=pearl_img)
 
 class Obstacle(Sprites):
