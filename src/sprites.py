@@ -60,19 +60,32 @@ class Player(Sprites):
         self._dash_dir = 1
         self.smoke_dash = SmokeDash()
         self.data_handler = DataHandler()
+        self._slow_active = False
+        self._slow_timer = 0.0
+        self._slow_duration = 5.0
+        self._pre_slow_speed = self.move_speed
+        self._current_drag_active = False
+        self._current_drag_speed = 0
 
     def movement(self):
         keys = pygame.key.get_pressed()
         self.speed.update(0, 0)
 
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.speed.x -= self.move_speed
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.speed.x += self.move_speed
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.speed.y -= self.move_speed
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self.speed.y += self.move_speed
+        if self._current_drag_active:
+            self.speed.x = self._current_drag_speed
+            if keys[pygame.K_UP] or keys[pygame.K_w]:
+                self.speed.y -= self.move_speed
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                self.speed.y += self.move_speed
+        else:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                self.speed.x -= self.move_speed
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                self.speed.x += self.move_speed
+            if keys[pygame.K_UP] or keys[pygame.K_w]:
+                self.speed.y -= self.move_speed
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                self.speed.y += self.move_speed
             
     def update_sprite(self):
         if self.speed.x < 0 and self._facing_right:
@@ -96,16 +109,37 @@ class Player(Sprites):
         self.pos.x = max(0, min(self.pos.x, self.screen_width - self.rect.width))
         self.pos.y = max(0, min(self.pos.y, self.screen_height - self.rect.height))
         self.rect.topleft = (int(self.pos.x), int(self.pos.y))
+
+        if self._slow_active:
+            self._slow_timer += dt
+            if self._slow_timer >= self._slow_duration:
+                self.move_speed = self._pre_slow_speed
+                self._slow_active = False
+
+        if self._current_drag_active and self.pos.x >= self.screen_width - self.rect.width:
+            self._current_drag_active = False
+
         self.oxygen_timer += dt
         if self.oxygen_timer >= 1.0:
             self.oxygen = max(0, self.oxygen - 1)
             self.oxygen_timer -= 1.0
 
     def lose_oxygen(self):
-        self.oxygen -= 5
+        self.oxygen = max(0, self.oxygen - 5)
 
     def lose_speed(self):
         self.move_speed = max(0, self.move_speed - 10)
+
+    def apply_slow(self):
+        if not self._slow_active:
+            self._pre_slow_speed = self.move_speed
+        self.move_speed = 20
+        self._slow_active = True
+        self._slow_timer = 0.0
+
+    def start_current_drag(self, speed=250):
+        self._current_drag_active = True
+        self._current_drag_speed = speed
 
     def gain_pearl(self):
         self.pearls += 1
@@ -215,7 +249,7 @@ class Obstacle(Sprites):
 
 class Shark(Obstacle):
     def __init__(self):
-        x = 10
+        x = -150
         y = random.randint(50, 400)
         
         shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
@@ -257,6 +291,7 @@ class Current(Obstacle):
            
         super().__init__(x=x, y=y, width=200, height=200, image=current_img, damage=0)
         self.image = current_img
+        self.rect = pygame.Rect(int(x), int(y), 100, 120)
         self.speed.x = self.push_speed
         self.push_force = 60
     def check_offscreen(self):

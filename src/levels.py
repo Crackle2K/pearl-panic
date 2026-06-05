@@ -70,6 +70,21 @@ class level():
         if self.shield.active:
             pygame.sprite.spritecollide(self.shield, self.obstacle_group, True)
 
+        if not self.shield.active:
+            hits = pygame.sprite.spritecollide(self.player, self.obstacle_group, False)
+            for hit in hits:
+                if isinstance(hit, sprites.Shark):
+                    self.player.lose_oxygen()
+                    hit.kill()
+                elif isinstance(hit, sprites.Jellyfish):
+                    self.player.apply_slow()
+                    hit.kill()
+                elif isinstance(hit, sprites.Current):
+                    self.player.start_current_drag(hit.push_speed)
+                elif isinstance(hit, sprites.Pearl):
+                    self.player.gain_pearl()
+                    hit.kill()
+
     def draw(self):
         self.screen.blit(self.bg_img, (0, 0))
         self.player.smoke_dash.draw(self.screen)
