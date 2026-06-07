@@ -93,7 +93,8 @@ class Main:
             show_level = levels.level2(self.screen)
         else:
             show_level = levels.level3(self.screen)
-
+        
+        
         while True:
             dt = self.clock.tick(60) / 1000.0
             for event in pygame.event.get():
@@ -104,7 +105,48 @@ class Main:
 
             show_level.update(dt)
             show_level.draw()
+            
+            if show_level.player.pearls >= 10:
+                self.show_game_over(win=True)
+                return True
+            if show_level.player.oxygen <= 0:
+                self.show_game_over(win= False)
+                return True
             pygame.display.flip()
+            
+    def show_game_over(self, win):
+        waiting = True
+        font = pygame.font.Font("assets/fonts/paladins.ttf", 40)
+        sub_font = pygame.font.Font("assets/fonts/retroica.ttf", 20)
+
+        if win:
+            bg_color = (0, 45, 35) 
+            title_text = "VICTORY ACHIEVED"
+            title_color = (0, 255, 150)
+        else:
+            bg_color = (45, 5, 10)
+            title_text = "OXYGEN AT ZERO"
+            title_color = (255, 50, 50)
+
+        while waiting:
+            self.screen.fill(bg_color)
+
+            title_surf = font.render(title_text, True, title_color)
+            title_rect = title_surf.get_rect(center=(self.SCREEN_WIDTH // 2, 180))
+            self.screen.blit(title_surf, title_rect)
+            btn_rect = self.create_button("MAIN MENU", 280)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if btn_rect.collidepoint(mouse_pos):
+                        waiting = False
+
+            pygame.display.flip()
+            self.clock.tick(60)
         
     def load_music(self):
         try:
