@@ -6,8 +6,11 @@ Description: This is the main file for Pearl Panic, an underwater arcade surviva
 
 import pygame
 import sys
+from pathlib import Path
 from data import DataHandler
 import levels
+
+BASE_DIR = Path(__file__).parent.parent #This was implemented to fix any mismatch because you might be unable to run the game unless you open the entire folder when running
 
 class Main:
 
@@ -47,7 +50,7 @@ class Main:
 
         pygame.draw.rect(self.screen, bg_color, button_rect, border_radius=8)
 
-        font = pygame.font.Font("assets/fonts/paladins.ttf", 25)
+        font = pygame.font.Font(str(BASE_DIR / "assets/fonts/paladins.ttf"), 25)
         text_surf = font.render(text, True, text_color)
         text_rect = text_surf.get_rect(center=button_rect.center)
         self.screen.blit(text_surf, text_rect)
@@ -56,7 +59,7 @@ class Main:
 
     def show_intro(self):
         """Shows the main menu screen with level select buttons and waits for the player to pick a level."""
-        intro_img = pygame.image.load("assets/images/intro.png").convert()
+        intro_img = pygame.image.load(str(BASE_DIR / "assets/images/intro.png")).convert()
         intro_img = pygame.transform.scale(intro_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
         self.load_music()
@@ -159,8 +162,8 @@ class Main:
     def show_game_over(self, win):
         """Shows the win or lose screen with an appropriate message and waits for the player to return to the main menu."""
         waiting = True
-        font = pygame.font.Font("assets/fonts/paladins.ttf", 40)
-        sub_font = pygame.font.Font("assets/fonts/retroica.ttf", 20)
+        font = pygame.font.Font(str(BASE_DIR / "assets/fonts/paladins.ttf"), 40)
+        sub_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/retroica.ttf"), 20)
 
         # Set up different colours and messages depending on whether the player won or lost
         if win:
@@ -200,9 +203,9 @@ class Main:
     def show_end_screen(self):
         """Shows the full game completion screen with a recap of all three levels after beating level 3."""
         waiting = True
-        title_font = pygame.font.Font("assets/fonts/paladins.ttf", 38)
-        heading_font = pygame.font.Font("assets/fonts/paladins.ttf", 22)
-        body_font = pygame.font.Font("assets/fonts/retroica.ttf", 16)
+        title_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/paladins.ttf"), 38)
+        heading_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/paladins.ttf"), 22)
+        body_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/retroica.ttf"), 16)
 
         lines = [
             ("YOU COLLECTED ALL 10 PEARLS", heading_font, (255, 220, 80)),
@@ -263,7 +266,7 @@ class Main:
     def load_music(self):
         """Tries to load and loop the background music and silently does nothing if the file isn't found."""
         try:
-            pygame.mixer.music.load("assets/sound/music/coral_chorus.mp3")
+            pygame.mixer.music.load(str(BASE_DIR / "assets/sound/music/coral_chorus.mp3"))
             pygame.mixer.music.play(-1)
         except Exception:
             # Music is nice but not essential and don't crash if it's missing

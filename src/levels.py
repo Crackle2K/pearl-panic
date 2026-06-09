@@ -6,8 +6,11 @@ Description: This file contains the level classes for Pearl Panic. It includes a
 
 import pygame
 import math
+from pathlib import Path
 from sprites import Player
 import sprites
+
+BASE_DIR = Path(__file__).parent.parent
 
 SEA_LEVEL_Y = 185
 SEA_FLOOR_Y = 400
@@ -31,8 +34,8 @@ class level():
         self.current_interval = 150
         self.pearl_interval = 100
         self.pearl_frames = 0
-        self.oxygen_font = pygame.font.Font("assets/fonts/retroica.ttf", 30)
-        self.pearl_font = pygame.font.Font("assets/fonts/retroica.ttf", 22)
+        self.oxygen_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/retroica.ttf"), 30)
+        self.pearl_font = pygame.font.Font(str(BASE_DIR / "assets/fonts/retroica.ttf"), 22)
         self.shark_y_min = 50
         self.shark_y_max = 400
         self.pearl_y_min = 20
@@ -42,7 +45,7 @@ class level():
         self.jelly_y_boundary = 600
 
         # Load and cache a small pearl icon to use in the HUD counter so we don't reload it every frame
-        pearl_img = pygame.image.load("assets/images/pearl.png").convert_alpha()
+        pearl_img = pygame.image.load(str(BASE_DIR / "assets/images/pearl.png")).convert_alpha()
         self._pearl_icon = pygame.transform.scale(pearl_img, (22, 29))
 
     def spawn_pearl(self):
@@ -213,7 +216,7 @@ class level1(level):
     def __init__(self, screen):
         """Sets up level 1 (The Beach) and loads the beach background and restricts play to below the sea surface."""
         super().__init__(screen)
-        self.bg_img = pygame.image.load("assets/images/beach.png").convert()
+        self.bg_img = pygame.image.load(str(BASE_DIR / "assets/images/beach.png")).convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.player.top_boundary = SEA_LEVEL_Y
         self.shark_y_min = SEA_LEVEL_Y
@@ -229,7 +232,7 @@ class level2(level):
     def __init__(self, screen):
         """Sets up level 2 (The Open Ocean) and loads the ocean background and adds a sea floor ceiling to the play area."""
         super().__init__(screen)
-        self.bg_img = pygame.image.load("assets/images/ocean.png").convert()
+        self.bg_img = pygame.image.load(str(BASE_DIR / "assets/images/ocean.png")).convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.player.bottom_boundary = SEA_FLOOR_Y
         self.shark_y_max = SEA_FLOOR_Y - 150
@@ -248,7 +251,7 @@ class level3(level):
     def __init__(self, screen):
         """Sets up level 3 (The Deep Cave) and loads the cave background and throws everything at the player."""
         super().__init__(screen)
-        self.bg_img = pygame.image.load("assets/images/cave.png").convert()
+        self.bg_img = pygame.image.load(str(BASE_DIR / "assets/images/cave.png")).convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
     def handle_spawns(self):

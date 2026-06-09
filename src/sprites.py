@@ -5,7 +5,10 @@ Description: This file contains various different objects and sprites for Pearl 
 """
 
 import pygame, random
+from pathlib import Path
 from data import DataHandler
+
+BASE_DIR = Path(__file__).parent.parent
 
 class Sprites(pygame.sprite.Sprite):
 
@@ -48,7 +51,7 @@ class Player(Sprites):
     def __init__(self, x=120, y=120, screen_width=680, screen_height=480):
         """Creates the player diver at the given starting position, loading the image and wiring up all the movement, dash, and ability state."""
         self._data_handler = DataHandler()
-        player_image = pygame.image.load("assets/images/diver.png").convert_alpha()
+        player_image = pygame.image.load(str(BASE_DIR / "assets/images/diver.png")).convert_alpha()
         player_image = pygame.transform.smoothscale(player_image, (40, 60))
         super().__init__(x=x, y=y, width=40, height=60, image=player_image)
 
@@ -198,7 +201,7 @@ class SmokeDash:
 
     def __init__(self):
         """Loads the smoke animation sprite sheet and chops it into individual frames, including a mirrored set for leftward dashes."""
-        sheet = pygame.image.load("assets/animations/smoke-dash-animation.png").convert_alpha()
+        sheet = pygame.image.load(str(BASE_DIR / "assets/animations/smoke-dash-animation.png")).convert_alpha()
         frame_w = sheet.get_width() // self.FRAME_COUNT
         frame_h = sheet.get_height()
         self._frames = []
@@ -257,7 +260,7 @@ class Shield(Sprites):
     def __init__(self, player):
         """Creates the bubble shield sprite and attaches it to the player to starts inactive and is only usable in level 3."""
         self.data_handler = DataHandler()
-        shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
+        shield_image = pygame.image.load(str(BASE_DIR / "assets/images/bubble_shield.png")).convert_alpha()
         shield_image = pygame.transform.smoothscale(shield_image, (90, 90))
         shield_image.set_alpha(128)
         super().__init__(x=player.pos.x, y=player.pos.y, width=80, height=90, image=shield_image)
@@ -294,7 +297,7 @@ class Shield(Sprites):
 class Pearl(Sprites):
     def __init__(self, y_min=20, y_max=450):
         """Spawns a pearl at a random position within the given vertical range."""
-        pearl_img = pygame.image.load("assets/images/pearl.png").convert_alpha()
+        pearl_img = pygame.image.load(str(BASE_DIR / "assets/images/pearl.png")).convert_alpha()
         pearl_img = pygame.transform.scale(pearl_img, (30, 40))
         x = random.randint(10, 670)
         y = random.randint(y_min, y_max)
@@ -319,7 +322,7 @@ class Shark(Obstacle):
         x = -150
         y = random.randint(y_min, y_max)
 
-        shark_img = pygame.image.load("assets/images/shark.png").convert_alpha()
+        shark_img = pygame.image.load(str(BASE_DIR / "assets/images/shark.png")).convert_alpha()
         shark_img = pygame.transform.smoothscale(shark_img, (150, 150))
         super().__init__(x=x, y=y, width=150, height=150, image=shark_img, damage=20)
         self.speed.x = random.randint(70, 120)
@@ -338,7 +341,7 @@ class Jellyfish(Obstacle):
         self.initial_speed_x = random.randint(40, 80)
         self.initial_speed_y = random.randint(-60, 60)
 
-        jelly_img = pygame.image.load("assets/images/jellyfish.png").convert_alpha()
+        jelly_img = pygame.image.load(str(BASE_DIR / "assets/images/jellyfish.png")).convert_alpha()
         jelly_img = pygame.transform.smoothscale(jelly_img, (30, 40))
 
         super().__init__(x=x, y=y, width=30, height=40, image=jelly_img, damage=10)
@@ -365,7 +368,7 @@ class Current(Obstacle):
         self.push_speed = 250
         y = random.randint(80, 380)
 
-        current_img = pygame.image.load("assets/images/current.png").convert_alpha()
+        current_img = pygame.image.load(str(BASE_DIR / "assets/images/current.png")).convert_alpha()
         current_img = pygame.transform.smoothscale(current_img, (200, 200))
 
         super().__init__(x=x, y=y, width=200, height=200, image=current_img, damage=0)
