@@ -75,7 +75,7 @@ class Main:
 
             # Process all events that happened since the last frame
             for event in pygame.event.get():
-                # The player clicked the window's close button — exit immediately
+                # The player clicked the window's close button, exit immediately
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
@@ -116,13 +116,13 @@ class Main:
         else:
             show_level = levels.level3(self.screen)
 
-        # Keep running the level until something ends it — a win, a death, or the player pressing Escape
+        # Keep running the level until something ends it, a win, a death, or the player pressing Escape
         while True:
             dt = self.clock.tick(60) / 1000.0
 
             # Handle window and keyboard events each frame
             for event in pygame.event.get():
-                # The player closed the window — tell the caller to shut down
+                # The player closed the window so tell the caller to shut down
                 if event.type == pygame.QUIT:
                     return False
                 # Escape sends the player back to the main menu
@@ -132,7 +132,7 @@ class Main:
             show_level.update(dt)
             show_level.draw()
 
-            # Check if the player has collected all 10 pearls — that's the win condition
+            # Check if the player has collected all 10 pearls as that's the win condition
             if show_level.player.pearls >= 10:
                 # If this wasn't the last level, unlock the next one
                 if current_lvl < 3:
@@ -149,7 +149,7 @@ class Main:
 
                 return True
 
-            # If the player's oxygen hit zero, they lose — show the game over screen
+            # If the player's oxygen hit zero, they lose so show the game over screen
             if show_level.player.oxygen <= 0:
                 self.show_game_over(win=False)
                 return True
@@ -183,14 +183,14 @@ class Main:
 
             # Handle all events while we wait on this screen
             for event in pygame.event.get():
-                # Window closed — exit the whole game
+                # Window closed so exit the whole game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    # The player clicked the main menu button — leave this screen
+                    # The player clicked the main menu button so leave this screen
                     if btn_rect.collidepoint(mouse_pos):
                         waiting = False
 
@@ -217,7 +217,7 @@ class Main:
             ("", body_font, (255, 255, 255)),
             ("Level 3 - The Deep Cave", heading_font, (100, 220, 255)),
             ("Ocean currents swept you aside, sharks", body_font, (200, 240, 255)),
-            ("and jellyfish blocked your path — but", body_font, (200, 240, 255)),
+            ("and jellyfish blocked your path, but", body_font, (200, 240, 255)),
             ("your bubble shield kept you safe.", body_font, (200, 240, 255)),
         ]
 
@@ -247,13 +247,13 @@ class Main:
 
             # Handle all events while on the end screen
             for event in pygame.event.get():
-                # Window closed — exit the game
+                # Window closed so exit the game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # The player clicked the main menu button — we're done here
+                    # The player clicked the main menu button so we're done here
                     if btn_rect.collidepoint(pygame.mouse.get_pos()):
                         waiting = False
 
@@ -261,12 +261,12 @@ class Main:
             self.clock.tick(60)
 
     def load_music(self):
-        """Tries to load and loop the background music — silently does nothing if the file isn't found."""
+        """Tries to load and loop the background music and silently does nothing if the file isn't found."""
         try:
             pygame.mixer.music.load("assets/sound/music/coral_chorus.mp3")
             pygame.mixer.music.play(-1)
         except Exception:
-            # Music is nice but not essential — don't crash if it's missing
+            # Music is nice but not essential and don't crash if it's missing
             pass
 
 Main()

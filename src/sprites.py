@@ -90,7 +90,7 @@ class Player(Sprites):
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 self.speed.y += self.move_speed
         else:
-            # Normal free movement — the player can go in any of the four directions
+            # Normal free movement so the player can go in any of the four directions
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 self.speed.x -= self.move_speed
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -114,7 +114,7 @@ class Player(Sprites):
             self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt=0.0):
-        """Runs every frame — handles movement, dashing, sprite direction, screen boundaries, slow effects, and oxygen drain."""
+        """Runs every frame, handles movement, dashing, sprite direction, screen boundaries, slow effects, and oxygen drain."""
         self.movement()
         self.dash()
 
@@ -153,15 +153,15 @@ class Player(Sprites):
             self.oxygen_timer -= 1.0
 
     def lose_oxygen(self):
-        """Penalises the player by removing 5 oxygen — called when a shark hits them."""
+        """Penalises the player by removing 5 oxygen which is called when a shark hits them."""
         self.oxygen = max(0, self.oxygen - 5)
 
     def lose_speed(self):
-        """Drops the player's movement speed by 10 — available for hazards that need it."""
+        """Drops the player's movement speed by 10 which is available for hazards that need it."""
         self.move_speed = max(0, self.move_speed - 10)
 
     def apply_slow(self):
-        """Drops the player's speed to a crawl for a few seconds — triggered by jellyfish stings."""
+        """Drops the player's speed to a crawl for a few seconds which is triggered by jellyfish stings."""
         # Only save the pre-slow speed if we're not already slowed, so stacking jellyfish don't corrupt the saved value
         if not self._slow_active:
             self._pre_slow_speed = self.move_speed
@@ -183,7 +183,7 @@ class Player(Sprites):
         keys = pygame.key.get_pressed()
         current_time = pygame.time.get_ticks()
 
-        # Shift triggers the dash — but only if we're not already mid-dash, the cooldown is done, and we're not on level 1
+        # Shift triggers the dash but only if we're not already mid-dash, the cooldown is done, and we're not on level 1
         if (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if not self._dash_active and (current_time - self._dash_last_time) >= self._dash_cooldown and self.data_handler.get_saved_level() != 1:
                 self._dash_active = True
@@ -239,7 +239,7 @@ class SmokeDash:
             self._timer -= self.FRAME_DURATION
             self._frame += 1
 
-            # We've played through all the frames — the animation is done
+            # We've played through all the frames and the animation is done
             if self._frame >= self.FRAME_COUNT:
                 self.active = False
 
@@ -255,7 +255,7 @@ class SmokeDash:
 
 class Shield(Sprites):
     def __init__(self, player):
-        """Creates the bubble shield sprite and attaches it to the player — starts inactive and is only usable in level 3."""
+        """Creates the bubble shield sprite and attaches it to the player to starts inactive and is only usable in level 3."""
         self.data_handler = DataHandler()
         shield_image = pygame.image.load("assets/images/bubble_shield.png").convert_alpha()
         shield_image = pygame.transform.smoothscale(shield_image, (90, 90))
@@ -269,7 +269,7 @@ class Shield(Sprites):
         self._last_used = 0
 
     def activate(self):
-        """Turns the shield on when the player presses R — only works on level 3 and only if the cooldown has expired."""
+        """Turns the shield on when the player presses R which only works on level 3 and only if the cooldown has expired."""
         current_time = pygame.time.get_ticks()
 
         # Only allow the shield on level 3, and only if it's not already active and the cooldown has cleared
@@ -302,7 +302,7 @@ class Pearl(Sprites):
 
 class Obstacle(Sprites):
     def __init__(self, x, y, width, height, image, damage=10):
-        """Base class for anything that can hurt or interact with the player — stores how much damage this obstacle deals."""
+        """Base class for anything that can hurt or interact with the player which stores how much damage this obstacle deals."""
         super().__init__(x=x, y=y, width=width, height=height, image=image)
         self.damage = damage
 

@@ -40,7 +40,7 @@ class DataHandler():
             return 1
 
     def get_max_unlocked(self):
-        """Returns the highest level number the player has ever beaten — this controls what shows up as clickable on the menu."""
+        """Returns the highest level number the player has ever beaten, this controls what shows up as clickable on the menu."""
         try:
             with open("userdata.txt", 'r') as file:
                 lines = file.readlines()
@@ -52,5 +52,5 @@ class DataHandler():
                     return int(lines[0].strip())
             return 1
         except (FileNotFoundError, ValueError):
-            # Something went wrong reading the file, so play it safe and return 1
+            # Something went wrong reading the file, so just return 1
             return 1

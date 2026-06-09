@@ -15,7 +15,7 @@ SEA_FLOOR_Y = 400
 class level():
 
     def __init__(self, screen):
-        """Sets up everything the level needs — the screen, player, shield, spawn timers, fonts, and pearl counter assets."""
+        """Sets up everything the level needs including the screen, player, shield, spawn timers, fonts, and pearl counter assets."""
         self.screen = screen
         self.SCREEN_WIDTH = screen.get_width()
         self.SCREEN_HEIGHT = screen.get_height()
@@ -69,7 +69,7 @@ class level():
         """Counts frames and launches a new jellyfish once the spawn interval has passed."""
         self.jelly_frames += 1
 
-        # Enough frames have passed — send in a jellyfish
+        # Enough frames have passed so send in a jellyfish
         if self.jelly_frames >= self.jelly_interval:
             new_jelly = sprites.Jellyfish(y_min=self.jelly_y_min, y_max=self.jelly_y_max, y_boundary=self.jelly_y_boundary)
             self.obstacle_group.add(new_jelly)
@@ -90,7 +90,7 @@ class level():
         pass
 
     def update(self, dt=0.0):
-        """Runs every game frame — spawns obstacles, handles input for the shield, updates all sprites, and processes collisions."""
+        """Runs every game frame, spawns obstacles, handles input for the shield, updates all sprites, and processes collisions."""
         self.handle_spawns()
         keys = pygame.key.get_pressed()
 
@@ -106,30 +106,30 @@ class level():
         if self.shield.active:
             pygame.sprite.spritecollide(self.shield, self.obstacle_group, True, pygame.sprite.collide_mask)
 
-        # Only check player collisions when the shield is down — the shield handles its own hits above
+        # Only check player collisions when the shield is down and the shield handles its own hits above
         if not self.shield.active:
             hits = pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask)
 
             # Go through every sprite the player is currently touching and apply the right effect
             for hit in hits:
                 if isinstance(hit, sprites.Shark):
-                    # Shark hit — costs the player a chunk of oxygen and then disappears
+                    # Shark hit, so it costs the player a chunk of oxygen and then disappears
                     self.player.lose_oxygen()
                     hit.kill()
                 elif isinstance(hit, sprites.Jellyfish):
-                    # Jellyfish sting — slows the player down for a few seconds
+                    # Jellyfish sting, so it slows the player down for a few seconds
                     self.player.apply_slow()
                     hit.kill()
                 elif isinstance(hit, sprites.Current):
-                    # Ocean current — grabs the player and drags them across the screen
+                    # Ocean current, so it grabs the player and drags them across the screen
                     self.player.start_current_drag(hit.push_speed)
                 elif isinstance(hit, sprites.Pearl):
-                    # Pearl collected — add it to the player's total and remove it from the world
+                    # Pearl collected, so add it to the player's total and remove it from the world
                     self.player.gain_pearl()
                     hit.kill()
 
     def draw(self):
-        """Draws everything visible in the level — background, player, effects, enemies, and HUD elements."""
+        """Draws everything visible in the level including background, player, effects, enemies, and HUD elements."""
         self.screen.blit(self.bg_img, (0, 0))
         self.player.smoke_dash.draw(self.screen)
         self.player.draw(self.screen)
@@ -154,7 +154,7 @@ class level():
         oxygen = self.player.oxygen
         ratio = oxygen / max_oxygen
 
-        # Pick a colour for the arc based on how much oxygen is left — green, orange, then red when critical
+        # Pick a colour for the arc based on how much oxygen is left, either green, orange, then red when critical
         if ratio > 0.5:
             arc_color = (0, 180, 255)
         elif ratio > 0.25:
@@ -211,7 +211,7 @@ class level():
 class level1(level):
 
     def __init__(self, screen):
-        """Sets up level 1 (The Beach) — loads the beach background and restricts play to below the sea surface."""
+        """Sets up level 1 (The Beach) and loads the beach background and restricts play to below the sea surface."""
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/beach.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -220,14 +220,14 @@ class level1(level):
         self.pearl_y_min = SEA_LEVEL_Y
 
     def handle_spawns(self):
-        """Level 1 only has sharks and pearls — keeps things simple for the opening stage."""
+        """Level 1 only has sharks and pearls, so keeps things simple for the opening stage."""
         self.spawn_shark()
         self.spawn_pearl()
 
 class level2(level):
 
     def __init__(self, screen):
-        """Sets up level 2 (The Open Ocean) — loads the ocean background and adds a sea floor ceiling to the play area."""
+        """Sets up level 2 (The Open Ocean) and loads the ocean background and adds a sea floor ceiling to the play area."""
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/ocean.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
@@ -238,7 +238,7 @@ class level2(level):
         self.pearl_y_max = SEA_FLOOR_Y - 40
 
     def handle_spawns(self):
-        """Level 2 introduces jellyfish on top of sharks — dodge both to collect pearls."""
+        """Level 2 introduces jellyfish on top of sharks so dodge both to collect pearls."""
         self.spawn_shark()
         self.spawn_jellyfish()
         self.spawn_pearl()
@@ -246,13 +246,13 @@ class level2(level):
 class level3(level):
 
     def __init__(self, screen):
-        """Sets up level 3 (The Deep Cave) — loads the cave background and throws everything at the player."""
+        """Sets up level 3 (The Deep Cave) and loads the cave background and throws everything at the player."""
         super().__init__(screen)
         self.bg_img = pygame.image.load("assets/images/cave.png").convert()
         self.bg_img = pygame.transform.scale(self.bg_img, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
     def handle_spawns(self):
-        """Level 3 is the full gauntlet — sharks, jellyfish, ocean currents, and pearls all at once."""
+        """Level 3 is the full gauntlet, so sharks, jellyfish, ocean currents, and pearls all at once."""
         self.spawn_shark()
         self.spawn_jellyfish()
         self.spawn_current()
